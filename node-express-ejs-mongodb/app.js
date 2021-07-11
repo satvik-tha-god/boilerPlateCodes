@@ -36,7 +36,7 @@ app.get(/*route*/, function(req, res){ //for reading our data
     });
 });
 
-app.post(/*route*/, function(req,res){
+app.post(/*route*/, function(req,res){/*post request for adding data*/
   const /*object to save model*/ = new /*model*/({
   title:req.body.title,
   content: req.body.content
@@ -50,11 +50,15 @@ app.post(/*route*/, function(req,res){
   }); //to save sent data
 });
 
-app.delete(/*route*/, function(req,res){
+app.delete(/*route*/, function(req,res){ //for deleting data
   /*Model Name*/.deleteMany(
   /*condition*/,
-  function(err){
-
+  function(err){ //error handling
+    if(!err){
+      res.send("Succesfully deleted items");
+    } else {
+      res.send(err);
+    }
   }
 );
 });
