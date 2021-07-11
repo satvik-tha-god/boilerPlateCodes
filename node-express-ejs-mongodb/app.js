@@ -27,7 +27,7 @@ const Article = mongoose.model("Article", articleSchema); //create your model an
 
 app.get(/*route*/, function(req, res){ //for reading our data
 /*Model Name*/.find(/*condition,*/ function(err, /*results*/){
-      console.log(foundArticles);
+      res.send(foundArticles);
     })
 });
 
