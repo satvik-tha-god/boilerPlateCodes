@@ -27,8 +27,36 @@ const Article = mongoose.model("Article", articleSchema); //create your model an
 
 app.get(/*route*/, function(req, res){ //for reading our data
 /*Model Name*/.find(/*condition,*/ function(err, /*results*/){
-      res.send(foundArticles);
-    })
+      if(!err){ //if we get an error then it sends
+        res.send(/*results*/);
+      } else {
+        res.send(err);
+      }
+
+    });
+});
+
+app.post(/*route*/, function(req,res){
+  const /*object to save model*/ = new /*model*/({
+  title:req.body.title,
+  content: req.body.content
+});
+/*object of model*/.save(function(err){
+    if(err!){ //send status if it's saved or not
+      res.send("Succesfully added data!");
+    } else {
+      res.send(err);
+    }
+  }); //to save sent data
+});
+
+app.delete(/*route*/, function(req,res){
+  /*Model Name*/.deleteMany(
+  /*condition*/,
+  function(err){
+
+  }
+);
 });
 
 app.listen(3000, function() { //server is up and running
