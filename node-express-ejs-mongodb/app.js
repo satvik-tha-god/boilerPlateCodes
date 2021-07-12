@@ -99,11 +99,11 @@ app.route( /*route*/ )
     }
   );
   })
-  .patch(function(req,res){
+  .patch(function(req,res){ //patch method
     /*modelName*/.update(
     {/*conditions*/},
     {$set: /*updates*/},
-    function(err, results){
+    function(err, results){ //error handling and shit lmao
       if(!err){
         res.send("Sucessfully updated!");
       } else {
