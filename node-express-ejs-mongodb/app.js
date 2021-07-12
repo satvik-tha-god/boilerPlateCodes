@@ -24,8 +24,8 @@ const articleSchema = { //create the schema your database is based upon, I have 
 const Article = mongoose.model("Article", articleSchema); //create your model and add the created schema to it
 
 //TODO
-
-app.get(/*route*/, function(req, res){ //for reading our data
+app.route(/*route*/)
+    .get(function(req, res){ //for reading our data
 /*Model Name*/.find(/*condition,*/ function(err, /*results*/){
       if(!err){ //if we get an error then it sends
         res.send(/*results*/);
@@ -34,9 +34,8 @@ app.get(/*route*/, function(req, res){ //for reading our data
       }
 
     });
-});
-
-app.post(/*route*/, function(req,res){/*post request for adding data*/
+})
+    .post(function(req,res){/*post request for adding data*/
   const /*object to save model*/ = new /*model*/({
   title:req.body.title,
   content: req.body.content
@@ -48,9 +47,8 @@ app.post(/*route*/, function(req,res){/*post request for adding data*/
       res.send(err);
     }
   }); //to save sent data
-});
-
-app.delete(/*route*/, function(req,res){ //for deleting data
+})
+    .delete(function(req,res){ //for deleting data
   /*Model Name*/.deleteMany(
   /*condition*/,
   function(err){ //error handling
