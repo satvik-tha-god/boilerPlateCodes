@@ -112,6 +112,18 @@ app.route( /*route*/ )
     }
   );
   })
+  .delete(function(req, res) { //delete specific
+    /*modelName*/.deleteOne(
+      {/*parameter*/: req.params./*parameter*/},
+      function(err) { //error handling
+        if (!err) {
+          res.send("Successfully deleted");
+        } else {
+          res.send(err);
+        }
+      }
+    );
+  });
 
 
 app.listen(3000, function() { //server is up and running
