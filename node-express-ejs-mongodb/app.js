@@ -85,13 +85,30 @@ app.route( /*route*/ )
       }
     });
   })
-  .put(function(req,res){
+  .put(function(req,res){ //update a specific part
     /*modelName*/.update(
     /*conditions*/,
     /*updates*/,
-    {overwrite: true}
-    function(err,results){
-
+    {overwrite: true}, //enabling overwrite
+      function(err){ //error handling
+      if(!err){
+        res.send("Succesfully updated");
+      } else{
+        res.send(err);
+      }
+    }
+  );
+  })
+  .patch(function(req,res){
+    /*modelName*/.update(
+    {/*conditions*/},
+    {$set: /*updates*/},
+    function(err, results){
+      if(!err){
+        res.send("Sucessfully updated!");
+      } else {
+        res.send(err);
+      }
     }
   );
   })
