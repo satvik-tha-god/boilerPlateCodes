@@ -18,15 +18,16 @@ mongoose.connect("mongodb://localhost:27017/" /* Add your database name after th
   useNewUrlParser: true
 });
 
-const articleSchema = { //create the schema your database is based upon, I have added some sample code
-  title: String,
-  content: String
+const /*schemaName*/ = { //create the schema your database is based upon, I have added some sample code
+  /*parameter1*/: /*datatype*/,
+  /*parameter2*/: /*datatype*/
 };
 
-const Article = mongoose.model("Article", articleSchema); //create your model and add the created schema to it
+const /*modelName*/ = mongoose.model(/*modelName*/, /*schemaName*/); //create your model and add the created schema to it
 
-//TODO
+/////////////////////////////////Parent route///////////////////////
 app.route( /*route*/ )
+
   .get(function(req, res) { //for reading our data
     /*Model Name*/
     .find( /*condition,*/ function(err, /*results*/ ) {
@@ -38,11 +39,12 @@ app.route( /*route*/ )
 
     });
   })
+
   .post(function(req, res) {
     /*post request for adding data*/
     const /*object to save model*/ = new /*model*/ ({
-      title: req.body.title,
-      content: req.body.content
+      /*paramter1*/: req.body./*parameter1*/,
+      /*parameter2*/: req.body./*parameter2*/
     });
     /*object of model*/
     .save(function(err) {
@@ -53,6 +55,7 @@ app.route( /*route*/ )
       }
     }); //to save sent data
   })
+
   .delete(function(req, res) { //for deleting data
     /*Model Name*/
     .deleteMany(
@@ -67,6 +70,32 @@ app.route( /*route*/ )
       }
     );
   });
+
+  /////////////////////////////////Child route///////////////////////
+
+  app.route(/*route/:parameter*/)
+
+  .get(function(req, res){ //get for child route
+
+  /*modelName*/.findOne({/*condition*/}, function(err, /*data*/){ //send specific
+      if(/*data*/){ // sending data and error handling
+        res.send(/*data*/);
+      } else {
+        res.send("No articles were found");
+      }
+    });
+  })
+  .put(function(req,res){
+    /*modelName*/.update(
+    /*conditions*/,
+    /*updates*/,
+    {overwrite: true}
+    function(err,results){
+
+    }
+  );
+  })
+
 
 app.listen(3000, function() { //server is up and running
   console.log("Server started on port 3000");
