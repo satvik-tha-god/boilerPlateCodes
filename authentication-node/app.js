@@ -4,7 +4,8 @@ const express = require("express"); //requiring and setting up our modules
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
-const encrypt = require("mongoose-encryption");
+// const encrypt = require("mongoose-encryption");
+const md5 = require("md5");
 
 const app = express();
 
@@ -21,7 +22,7 @@ const userSchema = new mongoose.Schema({ //defining our schema the new hip way
   password: String
 };)
 
-userSchema.plugin(encrypt, {secret: process.env.SECRET, encyptedFields: ["password"] });
+// userSchema.plugin(encrypt, {secret: process.env.SECRET, encyptedFields: ["password"] });
 
 const User = new mongoose.model("User", userSchema); //setting up our model
 
@@ -40,7 +41,7 @@ app.get("/register", function(req,res){ //get request for register page
 app.post("/register", function(req,res){ //post request for register; get data from user
   const newUser = new User({ //store data in model
     email: req.body.username,
-    password:  req.body.password
+    password:  md5(req.body.password) //encrypting password with md5
   });
   newUser.save(function(err){ //save data in model
     if(err){ //error handling
