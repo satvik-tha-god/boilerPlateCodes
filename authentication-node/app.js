@@ -1,5 +1,5 @@
 //jshint esversion:6
-
+require('dotenv').config(); //requiring our environment variable files
 const express = require("express"); //requiring and setting up our modules
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
@@ -21,8 +21,7 @@ const userSchema = new mongoose.Schema({ //defining our schema the new hip way
   password: String
 };)
 
-const secret = /*your secret encryption phrase*/; //ecrypting in mongoose
-userSchema.plugin(encrypt, {secret: secret, encyptedFields: ["password"] });
+userSchema.plugin(encrypt, {secret: process.env.SECRET, encyptedFields: ["password"] });
 
 const User = new mongoose.model("User", userSchema); //setting up our model
 
