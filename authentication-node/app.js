@@ -4,6 +4,7 @@ const express = require("express"); //requiring and setting up our modules
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+const encrypt = require("mongoose-encryption");
 
 const app = express();
 
@@ -15,10 +16,13 @@ app.use(bodyParser.urlencoded({
 
 mongoose.connect("mongodb://localhost:27017/userDB", {useNewUrlParser: true}); //setting up our connection to database
 
-const userSchema = { //defining our schema
+const userSchema = new mongoose.Schema({ //defining our schema the new hip way
   email: String,
   password: String
-};
+};)
+
+const secret = /*your secret encryption phrase*/; //ecrypting in mongoose
+userSchema.plugin(encrypt, {secret: secret, encyptedFields: ["password"] });
 
 const User = new mongoose.model("User", userSchema); //setting up our model
 
