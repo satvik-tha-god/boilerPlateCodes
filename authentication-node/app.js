@@ -5,7 +5,9 @@ const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 // const encrypt = require("mongoose-encryption");
-const md5 = require("md5");
+// const md5 = require("md5");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 const app = express();
 
@@ -39,17 +41,19 @@ app.get("/register", function(req,res){ //get request for register page
 });
 
 app.post("/register", function(req,res){ //post request for register; get data from user
-  const newUser = new User({ //store data in model
-    email: req.body.username,
-    password:  md5(req.body.password) //encrypting password with md5
-  });
-  newUser.save(function(err){ //save data in model
-    if(err){ //error handling
-      console.log(err);
-    } else {
-      res.render("secrets"); //render main page if nothing wrong lmao
-    }
-  });
+    bcrypt.hash(req.body.password, saltRounds, function(err, hash){ //encrypt password with bcrypt
+      const newUser = new User({ //store data in model
+        email: req.body.username,
+        password:  hash //encrypting password with hash
+      });
+      newUser.save(function(err){ //save data in model
+        if(err){ //error handling
+          console.log(err);
+        } else {
+          res.render("secrets"); //render main page if nothing wrong lmao
+        }
+      });
+    });
 });
 
 app.post("/login", function(req,res){  //post request for login; get data from user
@@ -61,9 +65,11 @@ app.post("/login", function(req,res){  //post request for login; get data from u
       console.log(err);
     } else {
       if(foundUser){  //
-        if(foundUser.password === password){ //if user is there then check if passwords match
-          res.render("secrets");
-        }
+        bcrypt.compare(password, foundUser.password, function(err, result){
+          if(result===true){ //using bcrypt to compare hashed passwords when logged in
+            res.render("secrets");
+          }
+        });
       }
     }
   });
