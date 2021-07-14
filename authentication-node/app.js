@@ -10,7 +10,7 @@ const mongoose = require("mongoose");
 // const saltRounds = 10;
 const session = require('express-session');
 const passport = require("passport");
-const passportLocalMongoose = require("passport-local-mongooose");
+const passportLocalMongoose = require("passport-local-mongoose");
 
 const app = express();
 
@@ -58,10 +58,26 @@ app.get("/register", function(req,res){ //get request for register page
   res.render("register");
 });
 
+app.get("/secrets", function(req,res){
+  if(req.isAuthenticated()){
+    res.render("secrets");
+  } else {
+    res.redirect("/login");
+  }
+});
+
 app.post("/register", function(req,res){ //post request for register; get data from user
-
-
-
+  User.register({username: req.body.username}, req.body.password, function(err, user){
+  if(err){
+    console.log(err);
+    res.redirect("/register");
+  } else {
+    passport.authenticate("local")(req, res, function(){
+      res.redirect("/secrets");
+    });
+  }
+});
+///////////////////////////////////// bcrypt start ////////////////////////
     // bcrypt.hash(req.body.password, saltRounds, function(err, hash){ //encrypt password with bcrypt
     //   const newUser = new User({ //store data in model
     //     email: req.body.username,
@@ -75,12 +91,25 @@ app.post("/register", function(req,res){ //post request for register; get data f
     //     }
     //   });
     // });
+/////////////////////////////////////// bcrypt end ////////////////////////////
 });
 
 app.post("/login", function(req,res){  //post request for login; get data from user
+  const user= new User({
+    username: req.body.username,
+    password: req.body.password
+  });
+  req.login(user, function(err){
+    if(err) {
+      console.log(err);
+    } else {
+      passport.authenticate("local")(req, res, function(){
+        res.redirect("/secrets");
+      });
+    }
+  });
 
-
-
+///////////////////////////// bcrpyt start //////////////////
   // const username = req.body.username; //what we have to take
   // const password = req.body.password;
   //
@@ -97,7 +126,9 @@ app.post("/login", function(req,res){  //post request for login; get data from u
   //     }
   //   }
   // });
+  ///////////////////////////// bcrypt end //////////////////////////
 });
+
 
 app.listen(3000, function(){ //server up and running
   console.log("Server started at port 3000");
