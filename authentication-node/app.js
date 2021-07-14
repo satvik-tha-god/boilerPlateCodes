@@ -58,21 +58,26 @@ app.get("/register", function(req,res){ //get request for register page
   res.render("register");
 });
 
-app.get("/secrets", function(req,res){
-  if(req.isAuthenticated()){
+app.get("/secrets", function(req,res){//get request for register page
+  if(req.isAuthenticated()){ //check if authenticated properly otherwise send to login
     res.render("secrets");
   } else {
     res.redirect("/login");
   }
 });
 
+app.get("/logout", function(req,res){ //logout functionality
+  req.logout();
+  res.redirect("/");
+});
+
 app.post("/register", function(req,res){ //post request for register; get data from user
-  User.register({username: req.body.username}, req.body.password, function(err, user){
-  if(err){
+  User.register({username: req.body.username}, req.body.password, function(err, user){ //register of passport
+  if(err){ //error handling
     console.log(err);
     res.redirect("/register");
   } else {
-    passport.authenticate("local")(req, res, function(){
+    passport.authenticate("local")(req, res, function(){ //authenticate
       res.redirect("/secrets");
     });
   }
@@ -95,15 +100,16 @@ app.post("/register", function(req,res){ //post request for register; get data f
 });
 
 app.post("/login", function(req,res){  //post request for login; get data from user
-  const user= new User({
+  const user= new User({ //passing user entry to model
     username: req.body.username,
     password: req.body.password
   });
-  req.login(user, function(err){
+  req.login(user, function(err){ //login
+    //error handling
     if(err) {
       console.log(err);
     } else {
-      passport.authenticate("local")(req, res, function(){
+      passport.authenticate("local")(req, res, function(){ //authenticate
         res.redirect("/secrets");
       });
     }
