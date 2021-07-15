@@ -37,7 +37,8 @@ mongoose.set("useCreateIndex", true);
 const userSchema = new mongoose.Schema({ //defining our schema the new hip way
   email: String,
   password: String,
-  googleId: String
+  googleId: String,
+  secret: String
 };)
 
 userSchema.plugin(passportLocalMongoose); //enabling passport local
@@ -97,11 +98,39 @@ app.get("/register", function(req,res){ //get request for register page
 });
 
 app.get("/secrets", function(req,res){//get request for register page
-  if(req.isAuthenticated()){ //check if authenticated properly otherwise send to login
-    res.render("secrets");
+  User.find({"secret": {$ne: null}}, function(err, foundUsers){
+      if(err){
+        console.log(err);
+      } else{
+        if(foundUsers){
+          res.render("secrets", {usersWithSecrets: foundUsers})
+        }
+      }
+    });
+});
+
+app.get("/submit", function(req,res){
+  if(req.isAuthenticated()){
+    res.render("submit");
   } else {
     res.redirect("/login");
   }
+});
+
+app.post("/submit", function(req,res){
+  const submittedSecret= req.body.secret;
+  User.findById(req.user.id, function(err, foundUser){
+    if(err){
+      console.log(err);
+    } else {
+      if(foundUser){
+        foundUser.secret = submittedSecret;
+        foundUser.save(function(){
+          res.redirect("/secrets");
+        });
+      }
+    }
+  });
 });
 
 app.get("/logout", function(req,res){ //logout functionality
